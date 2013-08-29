@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Ticket to ride (Belarusian Railway)
 // @namespace  http://mcm69.org
-// @version    0.1
+// @version    1.0
 // @description  A user script to help catch that last train ticket on http://poezd.rw.by
 // @match      https://poezd.rw.by/wps/myportal/home/rp/buyTicket/!ut*
 // @copyright  2013+, Yuriy Opryshko
@@ -13,7 +13,8 @@ var ticket2rw = {
         trackedCategories: [true, true, true, true, true, true],
         //todo: add ui for these options
         minTickets: 1,
-        refreshInterval: 30    
+        refreshInterval: 30,
+        playAlertSound: true    
     },
 
     localization: {
@@ -23,7 +24,8 @@ var ticket2rw = {
         trainNumber: 'Номер поезда:',
         categoryHeader: 'Тип билетов:',
         ok: 'OK',
-        close: 'Закрыть'
+        close: 'Закрыть',
+        reloadText: 'Ticket2rw: Обновляем данные...'
     },
     
     timeoutVar: null,
@@ -87,10 +89,26 @@ var ticket2rw = {
                 }
         }
         if (ticketsFound) {
-            alert(ticketsMessage);
+            if(me.config.playAlertSound){
+                var player = me.playAlertSound();
+                player.addEventListener('ended', function() {alert(ticketsMessage)});
+            } else {
+                alert(ticketsMessage);
+            }
         }
 
         return ticketsFound;
+    },
+
+    playAlertSound: function() {
+        console.log('playing alert sound');
+        var player = document.createElement('audio');
+        player.id = 'soundPlayer';
+        player.src = 'https://raw.github.com/mcm69/ticket2rwby/master/ding.ogg';
+        player.style.display = 'none';
+        document.body.appendChild(player);
+        player.play();
+        return player;
     },
 
     loadConfig: function(){
@@ -111,9 +129,11 @@ var ticket2rw = {
     reloadPage: function(){
         var reloadBtn = document.getElementsByClassName('commandExButton')[1];
         if (reloadBtn) {
+            document.getElementById('wrapperLoading').getElementsByTagName('span')[0].innerHTML = ticket2rw.localization.reloadText;
             reloadBtn.click();
         } else {
-            //location.reload();
+            console.warn('Reload button not found!');
+            location.reload();
         }
     },
 
@@ -166,7 +186,7 @@ var ticket2rw = {
 
     injectCss: function() {
         var css = '#ticket2rw { display: none; z-index: 4242; background-color: white; border: 1px dashed #62aae1; position: absolute; left: 50%; width: 250px; margin-left: -125px; top: 50%; height: 200px; margin-top: -100px; padding: 20px; };' +
-            '#ticket2rw table {width: 100%} #ticket2rw td.padLeft {padding-left: 20px}', //todo!
+            '#ticket2rw table {width: 100%} #ticket2rw td.padLeft {padding-left: 20px}', 
             head = document.getElementsByTagName('head')[0],
             style = document.createElement('style');
 
@@ -283,7 +303,7 @@ var ticket2rw = {
 
         if (gotTickets && me.checkTickets()) {
             //do nothing - the tickets are found
-            //todo: maybe do something?    
+
         } else {
             //schedule refreshing of the page
             me.timeoutVar = setTimeout(me.reloadPage, me.config.refreshInterval*1000);
