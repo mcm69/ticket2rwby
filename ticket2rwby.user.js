@@ -112,13 +112,14 @@ var ticket2rw = {
     },
 
     loadConfig: function(){
+        var config = this.defaultConfig, storedConfig;
         if (localStorage.ticket2rw_config) {
-            this.config = JSON.parse(localStorage.ticket2rw_config);
+            storedConfig = JSON.parse(localStorage.ticket2rw_config)
+            for (var key in storedConfig) {
+                config[key] = storedConfig[key];
+            }
         }
-        else {
-            this.config = this.defaultConfig;
-        }
-        return this.config;
+        return this.config = config;
 
     },
 
