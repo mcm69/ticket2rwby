@@ -11,8 +11,8 @@ var ticket2rw = {
         enabled: false,
         trainNumber: '42',
         trackedCategories: [true, true, true, true, true, true],
+        ticketCount: 1,
         //todo: add ui for these options
-        minTickets: 1,
         refreshInterval: 30,
         playAlertSound: true    
     },
@@ -22,6 +22,7 @@ var ticket2rw = {
         ticketCategories: ["Общие", "Сидячие", "Плацкартные", "Купейные", "СВ", "Мягкие"],
         foundTickets: 'Найдены билеты на поезд ',
         trainNumber: 'Номер поезда:',
+        ticketCount: 'Количество билетов:',
         categoryHeader: 'Тип билетов:',
         ok: 'OK',
         close: 'Закрыть',
@@ -83,7 +84,7 @@ var ticket2rw = {
             ticketsMessage = me.localization.foundTickets + me.config.trainNumber;
         
         for (var i = 0; i < me.tickets.length; i++) {
-            if (me.config.trackedCategories[i] && me.tickets[i] >= me.config.minTickets) {
+            if (me.config.trackedCategories[i] && me.tickets[i] >= me.config.ticketCount) {
                     ticketsFound = true;
                     ticketsMessage += '\n'+me.localization.ticketCategories[i]+': '+me.tickets[i];
                 }
@@ -143,6 +144,7 @@ var ticket2rw = {
         var me=this,
             windowHtml = '<h2>ticket2rw</h2><table><tr><td><strong id="ticket2rw.enabledText"></strong></td><td><input type="checkbox" id="ticket2rw.enabled"></td></tr>'+
             '<tr><td><span id="ticket2rw.trainNumberText"></span></td><td><input type="text" id="ticket2rw.trainNumber"></td></tr>'+
+            '<tr><td><span id="ticket2rw.ticketCountText"></span></td><td><input type="number" min="1" id="ticket2rw.ticketCount"></td></tr>'+
             '<tr><td colspan="2"><span id="ticket2rw.categoryHeaderText"></span></td></tr>'+
             '<tr><td colspan="2" class="padLeft">'+
             '<div><input type="checkbox" id="ticket2rw.trackedCategories.0"> <span id="ticket2rw.categoryText.0"></span></div>'+
@@ -165,6 +167,7 @@ var ticket2rw = {
         //resolve the DOM elements now to cache them for later usage
         me.elements.enabled = document.getElementById('ticket2rw.enabled');
         me.elements.trainNumber = document.getElementById('ticket2rw.trainNumber');
+        me.elements.ticketCount = document.getElementById('ticket2rw.ticketCount');
         me.elements.trackedCategories = [];
         for (var i = 0; i < 6; i++) {
             me.elements.trackedCategories.push(document.getElementById('ticket2rw.trackedCategories.'+i));
@@ -186,7 +189,7 @@ var ticket2rw = {
     },
 
     injectCss: function() {
-        var css = '#ticket2rw { display: none; z-index: 4242; background-color: white; border: 1px dashed #62aae1; position: absolute; left: 50%; width: 250px; margin-left: -125px; top: 50%; height: 200px; margin-top: -100px; padding: 20px; };' +
+        var css = '#ticket2rw { display: none; z-index: 4242; background-color: white; border: 1px dashed #62aae1; position: absolute; left: 50%; width: 250px; margin-left: -125px; top: 50%; height: 230px; margin-top: -115px; padding: 20px; };' +
             '#ticket2rw table {width: 100%} #ticket2rw td.padLeft {padding-left: 20px}', 
             head = document.getElementsByTagName('head')[0],
             style = document.createElement('style');
@@ -207,6 +210,7 @@ var ticket2rw = {
         document.getElementById('ticket2rw.trainNumberText').innerText = me.localization.trainNumber;
         document.getElementById('ticket2rw.categoryHeaderText').innerText = me.localization.categoryHeader;
         document.getElementById('ticket2rw.trainNumberText').innerText = me.localization.trainNumber;
+        document.getElementById('ticket2rw.ticketCountText').innerText = me.localization.ticketCount;
         for (var i = 0; i < me.localization.ticketCategories.length; i++) {
             document.getElementById('ticket2rw.categoryText.'+i).innerText = 
                 me.localization.ticketCategories[i];
@@ -244,6 +248,7 @@ var ticket2rw = {
             config = me.loadConfig();
         config.enabled = me.elements.enabled.checked;
         config.trainNumber = me.elements.trainNumber.value;
+        config.ticketCount = me.elements.ticketCount.value;
         for (var i = 0; i < 6; i++) {
             config.trackedCategories[i] = me.elements.trackedCategories[i].checked;    
         }
@@ -269,6 +274,7 @@ var ticket2rw = {
         me.config = config;
         me.elements.enabled.checked = config.enabled;
         me.elements.trainNumber.value = config.trainNumber;
+        me.elements.ticketCount.value = config.ticketCount;
         for (var i = 0; i < 6; i++) {
             me.elements.trackedCategories[i].checked = config.trackedCategories[i];
         }
