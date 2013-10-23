@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Ticket to ride (Belarusian Railway)
 // @namespace  http://mcm69.org
-// @version    1.0
+// @version    1.0.1
 // @description  A user script to help catch that last train ticket on http://poezd.rw.by
 // @match      https://poezd.rw.by/wps/myportal/home/rp/buyTicket/!ut*
 // @copyright  2013+, Yuriy Opryshko
