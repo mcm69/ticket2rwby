@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Ticket to ride (Belarusian Railway)
 // @namespace  http://mcm69.org
-// @version    1.0.1
+// @version    1.0.2
 // @description  A user script to help catch that last train ticket on http://poezd.rw.by
 // @match      https://poezd.rw.by/wps/myportal/home/rp/buyTicket/!ut*
 // @copyright  2013+, Yuriy Opryshko
@@ -300,7 +300,7 @@ var ticket2rw = {
         var me=this,
             gotTickets;
 
-        if (!enabled) {
+        if (!enabled || !me.isSelectTrainPage()) {
             //if we are disabled, clear the timeout variable to prevent a final reload
             clearTimeout(me.timeoutVar);
             return;
@@ -315,6 +315,12 @@ var ticket2rw = {
             //schedule refreshing of the page
             me.timeoutVar = setTimeout(me.reloadPage, me.config.refreshInterval*1000);
         }
+    },
+    
+    f: function() {
+        var tabsDiv = document.getElementsByClassName('tabs_12');
+        var secondTab = tabsDiv.getElementsByTagName('div')[1];
+        return secondTab.className === 'tabs12_ch';
     }
 };
 
